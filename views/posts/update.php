@@ -22,10 +22,7 @@
             <td>Image</td>
                 <td>
                 <?php
-                echo $post->image ? "<img src='uploads/{$post->image}' style='width:300px;' />" : "No image found.";
-
-            ?>
-            <br><br><input type="file" name="image" /></td>
+                echo $post->image ? "<img src='uploads/{$post->image}' style='width:300px;' />" : "No image found.";?>
             <td>New Image</td>
 
             <td><input type="file" name="image"/></td>

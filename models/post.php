@@ -67,7 +67,7 @@ class Post {
         $req->bindParam(':image', $image);
         
         if($req->execute()){
-            echo "<br>Post actualizado";
+            echo "<div class='success'><br>Post actualizado</div>";
                 // try to upload the submitted file
         // uploadPhoto() method will return an error message, if any.
         //echo uploadPhoto();
@@ -160,7 +160,7 @@ class Post {
         $req->bindParam(':image', $image);
         
         if($req->execute()){
-            echo "<br>Post creado";
+            echo "<div class='success'><br><h3>Post creado</h3></div>";
             // try to upload the submitted file
         // uploadPhoto() method will return an error message, if any.
         //echo uploadPhoto();
@@ -240,7 +240,7 @@ class Post {
         $db = Db::getInstance();
         $req = $db->prepare('DELETE FROM posts WHERE id = '.$_GET['id']);
         if($req->execute()){
-            echo "<br>Post eliminado";
+            echo "<div class='success'><br>Post eliminado</div>";
         } else {
             echo "<br>No se ha podido eliminar el post";
         }

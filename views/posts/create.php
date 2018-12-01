@@ -2,6 +2,9 @@
     
     <table>
         <tr>
+            <td><h3>Introduce los datos</h3></td>
+        </tr>
+        <tr>
             <td>Title</td>
             <td><input type='text' id='title' name='title'/></td>
         </tr>
