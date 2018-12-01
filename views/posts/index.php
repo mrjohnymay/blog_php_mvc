@@ -1,3 +1,4 @@
+<!--Hacemos un for que recorre todos los posts y los guarda en una sola variable y muestra el autor y un botón para ver el contenido-->
 <a href='?controller=posts&action=create'>Crear post</a>
 <h2>Listado de los posts:</h2>
 <?php foreach ($posts as $post) { ?>

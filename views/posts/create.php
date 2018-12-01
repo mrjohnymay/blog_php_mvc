@@ -1,5 +1,5 @@
+<!--En esta tabla introducimos los datos necesarios para crear un post-->
 <form action="?controller=posts&action=create_post" method="post" enctype="multipart/form-data">
-    
     <table>
         <tr>
             <td><h3>Introduce los datos</h3></td>
@@ -27,6 +27,5 @@
                 <button type="submit" class="btn btn-primary">Create</button>
             </td>
         </tr>
- 
     </table>  
 </form>

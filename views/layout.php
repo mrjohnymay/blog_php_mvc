@@ -1,3 +1,4 @@
+<!--En el layout importo los estilos y divido el header y el footer del contenido. Todo lo pongo bajo un div content para pdoer darle estilo-->
 <DOCTYPE html>
     <html>
         <head>

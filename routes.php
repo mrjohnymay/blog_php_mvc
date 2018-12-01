@@ -1,5 +1,4 @@
 <?php
-
 function call($controller, $action) {
     require_once('controllers/' . $controller . '_controller.php');
     switch ($controller) { //para cada controlador haremos un case
@@ -7,8 +6,7 @@ function call($controller, $action) {
             $controller = new PagesController();
             break;
         case 'posts':
-            // necesitamos el modelo para después consultar a la BBDD
-// desde el controlador
+            // necesitamos el modelo para después consultar a la BBDD desde el controlador
             require_once('models/post.php');
             $controller = new PostsController();
             break;

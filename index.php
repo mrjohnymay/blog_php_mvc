@@ -1,5 +1,5 @@
 <?php
-
+//Hacemos la conexión a la base de datos
 require_once('connection.php');
 
 if (isset($_GET['controller']) && isset($_GET['action'])) {
@@ -9,5 +9,6 @@ if (isset($_GET['controller']) && isset($_GET['action'])) {
     $controller = 'pages';
     $action = 'home';
 }
+//Una vez sabemos donde queremos ir, mostramos el layout
 require_once('views/layout.php');
 ?>

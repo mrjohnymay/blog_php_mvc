@@ -2,16 +2,16 @@
 
 class Post {
 
-    // definimos tres atributos
-    // los declaramos como públicos para acceder directamente $post->author
+    // definimos los atributos
+    // los declaramos como públicos para acceder directamente
     public $id;
     public $title;
     public $author;
     public $content;
     public $created;
     public $modified;
-    //public $image
-
+    
+    //En este constructor, añadimos los atributos a la clase
     public function __construct($id, $title, $author, $content, $created, $modified, $image) {
         $this->id = $id;
         $this->title = $title;
@@ -27,8 +27,7 @@ class Post {
         $db = Db::getInstance(); //devuelve la conexion a la base de datos
         $req = $db->query('SELECT * FROM posts');
 
-        // creamos una lista de objectos post y recorremos la respuesta de la
-        //consulta
+        // creamos una lista de objectos post y recorremos la respuesta de la consulta
         foreach ($req->fetchAll() as $post) {
             $list[] = new Post($post['id'], $post['title'], $post['author'], $post['content'], $post['created'], $post['modified'], $post['image']);
         }
@@ -43,10 +42,12 @@ class Post {
         // preparamos la sentencia y reemplazamos :id con el valor de $id
         $req->execute(array('id' => $id));
         $post = $req->fetch();
+        //devolvemos los datos de un post
         return new Post($post['id'], $post['title'], $post['author'], $post['content'], $post['created'], $post['modified'], $post['image']);
     }
     
     public static function update() {
+        //recogemos los datos del formulario
         $id=$_POST['id'];
         $title=$_POST['title'];
         $author=$_POST['author'];
@@ -54,11 +55,13 @@ class Post {
         $image=$_POST['image'];
 
         $db = Db::getInstance();
+        //preparamos la imagen
         $image=htmlspecialchars(strip_tags($_FILES['image']['tmp_name'])); 
      
         $image=!empty($_FILES["image"]["name"])
         ? sha1_file($_FILES['image']['tmp_name']) . "-" . basename($_FILES["image"]["name"]) : "";
-
+        
+        //Hacemos el update con los datos del form
         $req = $db->prepare("Update posts set title = :title, author = :author, content = :content, modified = CURRENT_TIMESTAMP(), image = :image where id=:id");
         $req->bindParam(':id', $id);
         $req->bindParam(':title', $title);
@@ -68,85 +71,67 @@ class Post {
         
         if($req->execute()){
             echo "<div class='success'><br>Post actualizado</div>";
-                // try to upload the submitted file
-        // uploadPhoto() method will return an error message, if any.
-        //echo uploadPhoto();
-        
-        $result_message="";
- 
-        // now, if image is not empty, try to upload the image
-        if($image){
+            
+            //Esta parte esta extraida de la práctica anterior. Intenté hacerlo en un método a parte pero no pude pasar el valor de la imagen. Es por eso que esta en la función.
+            $result_message="";
+            if($image){
+                $target_directory = "uploads/";
+                $target_file = $target_directory . $image;
+                $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
 
-            // sha1_file() function is used to make a unique file name
-            $target_directory = "uploads/";
-            $target_file = $target_directory . $image;
-            $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
-
-            // error message is empty
-            $file_upload_error_messages="";
-            // make sure that file is a real image
-            $check = getimagesize($_FILES["image"]["tmp_name"]);
-            if($check!==false){
-            // submitted file is an image
-            }else{
-                $file_upload_error_messages.="<div>Submitted file is not an image.</div>";
-            }
-
-            // make sure certain file types are allowed
-            $allowed_file_types=array("jpg", "jpeg", "png", "gif");
-            if(!in_array($file_type, $allowed_file_types)){
-                $file_upload_error_messages.="<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
-            }
-
-            // make sure file does not exist
-            if(file_exists($target_file)){
-                $file_upload_error_messages.="<div>Image already exists. Try to change file name.</div>";
-            }
-
-            // make sure submitted file is not too large, can't be larger than 1 MB
-            if($_FILES['image']['size'] > (1024000)){
-                $file_upload_error_messages.="<div>Image must be less than 1 MB in size.</div>";
-            }
-
-            // make sure the 'uploads' folder exists
-            // if not, create it
-            if(!is_dir($target_directory)){
-                mkdir($target_directory, 0777, true);
-            }
-                    // if $file_upload_error_messages is still empty
-            if(empty($file_upload_error_messages)){
-                // it means there are no errors, so try to upload the file
-                if(move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)){
-                    // it means photo was uploaded
+                $file_upload_error_messages="";
+                $check = getimagesize($_FILES["image"]["tmp_name"]);
+                if($check!==false){
                 }else{
+                    $file_upload_error_messages.="<div>Submitted file is not an image.</div>";
+                }
+
+                $allowed_file_types=array("jpg", "jpeg", "png", "gif");
+                if(!in_array($file_type, $allowed_file_types)){
+                    $file_upload_error_messages.="<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
+                }
+
+                if(file_exists($target_file)){
+                    $file_upload_error_messages.="<div>Image already exists. Try to change file name.</div>";
+                }
+
+                if($_FILES['image']['size'] > (1024000)){
+                    $file_upload_error_messages.="<div>Image must be less than 1 MB in size.</div>";
+                }
+
+                if(!is_dir($target_directory)){
+                    mkdir($target_directory, 0777, true);
+                }
+                if(empty($file_upload_error_messages)){
+                    if(move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)){
+                    }else{
+                        $result_message.="<div class='alert alert-danger'>";
+                            $result_message.="<div>Unable to upload photo.</div>";
+                            $result_message.="<div>Update the record to upload photo.</div>";
+                        $result_message.="</div>";
+                    }
+                }
+
+                else{
                     $result_message.="<div class='alert alert-danger'>";
-                        $result_message.="<div>Unable to upload photo.</div>";
+                        $result_message.="{$file_upload_error_messages}";
                         $result_message.="<div>Update the record to upload photo.</div>";
                     $result_message.="</div>";
                 }
-            }
+                    }
 
-            // if $file_upload_error_messages is NOT empty
-            else{
-                // it means there are some errors, so show them to user
-                $result_message.="<div class='alert alert-danger'>";
-                    $result_message.="{$file_upload_error_messages}";
-                    $result_message.="<div>Update the record to upload photo.</div>";
-                $result_message.="</div>";
-            }
-
-                }
-
-                echo $result_message;
+                    echo $result_message;
         } else {
             echo "<br>No se ha actualizado el post";
         }
     }
     
     public static function create() {
+        //Se recogen los datos del formulario
         $title=$_POST['title'];
         $author=$_POST['author'];
         $content=$_POST['content'];
+        //Se preparan los datos de la imagen para poder insertarla
         $image=!empty($_FILES["image"]["name"])
 
         ? sha1_file($_FILES['image']['tmp_name']) . "-" . basename($_FILES["image"]["name"]) : "";
@@ -161,56 +146,40 @@ class Post {
         
         if($req->execute()){
             echo "<div class='success'><br><h3>Post creado</h3></div>";
-            // try to upload the submitted file
-        // uploadPhoto() method will return an error message, if any.
-        //echo uploadPhoto();
-        
+        //Esta parte esta extraida de la práctica anterior. Intenté hacerlo en un método a parte pero no pude pasar el valor de la imagen. Es por eso que esta en la función.
         $result_message="";
  
-        // now, if image is not empty, try to upload the image
         if($image){
 
-            // sha1_file() function is used to make a unique file name
             $target_directory = "uploads/";
             $target_file = $target_directory . $image;
             $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
 
-            // error message is empty
             $file_upload_error_messages="";
-            // make sure that file is a real image
             $check = getimagesize($_FILES["image"]["tmp_name"]);
             if($check!==false){
-            // submitted file is an image
             }else{
                 $file_upload_error_messages.="<div>Submitted file is not an image.</div>";
             }
 
-            // make sure certain file types are allowed
             $allowed_file_types=array("jpg", "jpeg", "png", "gif");
             if(!in_array($file_type, $allowed_file_types)){
                 $file_upload_error_messages.="<div>Only JPG, JPEG, PNG, GIF files are allowed.</div>";
             }
 
-            // make sure file does not exist
             if(file_exists($target_file)){
                 $file_upload_error_messages.="<div>Image already exists. Try to change file name.</div>";
             }
 
-            // make sure submitted file is not too large, can't be larger than 1 MB
             if($_FILES['image']['size'] > (1024000)){
                 $file_upload_error_messages.="<div>Image must be less than 1 MB in size.</div>";
             }
 
-            // make sure the 'uploads' folder exists
-            // if not, create it
             if(!is_dir($target_directory)){
                 mkdir($target_directory, 0777, true);
             }
-                    // if $file_upload_error_messages is still empty
             if(empty($file_upload_error_messages)){
-                // it means there are no errors, so try to upload the file
                 if(move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)){
-                    // it means photo was uploaded
                 }else{
                     $result_message.="<div class='alert alert-danger'>";
                         $result_message.="<div>Unable to upload photo.</div>";
@@ -219,17 +188,13 @@ class Post {
                 }
             }
 
-            // if $file_upload_error_messages is NOT empty
             else{
-                // it means there are some errors, so show them to user
                 $result_message.="<div class='alert alert-danger'>";
                     $result_message.="{$file_upload_error_messages}";
                     $result_message.="<div>Update the record to upload photo.</div>";
                 $result_message.="</div>";
             }
-
                 }
-
                 echo $result_message;
         } else {
             echo "<br>No se ha creado el post";
@@ -237,6 +202,7 @@ class Post {
     }
     
      public static function delete() {
+        //Eliminamos una entrada con el delete
         $db = Db::getInstance();
         $req = $db->prepare('DELETE FROM posts WHERE id = '.$_GET['id']);
         if($req->execute()){

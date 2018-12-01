@@ -1,3 +1,4 @@
+<!--En esta vista se muestra una tabla con los datos del post y dos botones para actualizar o eliminar el post-->
 <table>
     <tr>
         <td><p><strong>Post #<?php echo $post->id; ?></strong></p></td>
