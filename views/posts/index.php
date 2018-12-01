@@ -1,3 +1,4 @@
+<a href='?controller=posts&action=create'>Crear post</a>
 <p><strong>Listado de los posts:</strong></p>
 <?php foreach ($posts as $post) { ?>
     <p>

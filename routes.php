@@ -21,7 +21,7 @@ function call($controller, $action) {
 // consideramos estos valores "permitidos"
 // agregando una entrada para el nuevo controlador y sus acciones.
 $controllers = array('pages' => ['home', 'error'],
-                     'posts' => ['index', 'show']);
+                     'posts' => ['index', 'show', 'update','update_post','create','create_post', 'delete']);
 
 if (array_key_exists($controller, $controllers)) {
     if (in_array($action, $controllers[$controller])) {

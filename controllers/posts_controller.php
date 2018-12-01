@@ -19,7 +19,26 @@ class PostsController {
         $post = Post::find($_GET['id']);
         require_once('views/posts/show.php');
     }
-
+    
+    public function update(){
+        $post = Post::find($_GET['id']);
+        require_once('views/posts/update.php');
+    }
+    
+    public function update_post(){
+        Post::update();
+    }
+    
+    public function create(){
+        require_once('views/posts/create.php');
+    }
+    
+    public function create_post(){
+        Post::create();
+    }
+    
+    public function delete(){
+        Post::delete();
+    }
 }
-
 ?>
